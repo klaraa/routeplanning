@@ -5,8 +5,8 @@
     <button v-on:click="planroute">Route planen</button>
     <button v-on:click="getPosition">aktuelle Position</button>
     <l-map :zoom=13 :center="center">
-      <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-      <l-marker :lat-lng="marker"></l-marker>
+      <l-tile-layer :url="url"></l-tile-layer>
+      <!-- <l-marker :lat-lng="marker"></l-marker> -->
     </l-map>
   </div>
 </template>
@@ -17,7 +17,7 @@ import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
 // @ts-ignore
 import OrsDirections from 'openrouteservice-js/src/OrsDirections';
 import axios from 'axios';
-import { LMap, LTileLayer, LMarker, LPopup, LTooltip, L } from 'vue2-leaflet';
+import { LMap, LTileLayer, LMarker, LPopup, LTooltip} from 'vue2-leaflet';
 import 'leaflet/dist/leaflet.css'
 
 
@@ -25,9 +25,10 @@ import 'leaflet/dist/leaflet.css'
   components: {
     LMap,
     LTileLayer,
-    LMarker,
-  },
+    LMarker,  
+    },
 })
+
 export default class Home extends Vue {
   startpoint='';
   endpoint='';
@@ -74,20 +75,19 @@ export default class Home extends Vue {
         alert(error.message);
       }
     );
-
   }
 
  data() {
     return {
       zoom: 13,
-      center: L.latLng(47.413220, -1.219482),
+      center: [48,9],
       url: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
-      attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-      marker: L.latLng(47.413220, -1.219482),
+      //attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+      //marker: L.latLng(47.413220, -1.219482),
       //markers: []
     }
   }
-  
+
   //Vue.config.productionTip = false;
 
 
