@@ -4,7 +4,7 @@
     <input v-model="endpoint" placeholder="Ziel"/>
     <button v-on:click="planroute">Route planen</button>
     <button v-on:click="getPosition">aktuelle Position</button>
-    <l-map :zoom=13 :center="center">
+    <l-map :zoom=13 :center="center" ref="map">
       <l-tile-layer :url="url"></l-tile-layer>
       <!-- <l-marker :lat-lng="marker"></l-marker> -->
     </l-map>
@@ -17,7 +17,7 @@ import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
 // @ts-ignore
 import OrsDirections from 'openrouteservice-js/src/OrsDirections';
 import axios from 'axios';
-import { LMap, LTileLayer, LMarker, LPopup, LTooltip} from 'vue2-leaflet';
+import { LMap, LTileLayer, LMarker, LPopup, LTooltip, LImageOverlay, LPolyline, L} from 'vue2-leaflet';
 import 'leaflet/dist/leaflet.css'
 
 
@@ -25,7 +25,12 @@ import 'leaflet/dist/leaflet.css'
   components: {
     LMap,
     LTileLayer,
-    LMarker,  
+    LMarker, 
+    LImageOverlay,
+    LPolyline,
+    LPopup,
+    LTooltip,
+    L, 
     },
 })
 
@@ -33,27 +38,30 @@ export default class Home extends Vue {
   startpoint='';
   endpoint='';
   startpos='';
-  public currentPosLong: number|null=null;
-  public currentPosLat: number|null=null;
+  currentPosLong: number|undefined;
+  currentPosLat: number|undefined;
   latlngPos='';
+  public pos:any;
   //map='';
   //marker='';
-  public lat: number|null=null;
-  public lng: number|null=null;
+  lat: number|undefined;
+  lng: number|undefined;
   planroute() {
     this.getDircetions(this.startpoint, this.endpoint);
   }
   
   async getReverseGeocode(){
-    await axios.get('https://maps.googleapis.com/maps/api/geocode/json?',{
+    await axios.get('https://api.openrouteservice.org/geocode/reverse?',{
       params:{
-        latlng: this.latlngPos,
-        key: 'AIzaSyC_8ddUtSwBjXjfm6dNTi4O8owp0y14Hy8',
+        'point.lat': this.currentPosLat,
+        'point.lon': this.currentPosLong,
+        api_key: '5b3ce3597851110001cf6248284f5c01dda445a9a0406fe843f2ccb5',
       }
     })
     .then((response) => {
       console.log(response);
-      this.startpos=response.data.results[0].formatted_address;
+      this.startpos=response.data.features[0].properties.name + ',' + response.data.features[0].properties.postalcode;
+      console.log(this.startpos);
     })
     .catch(function (error:any) {
       console.log(error);
@@ -66,10 +74,11 @@ export default class Home extends Vue {
       async (position)=>{
         this.currentPosLong = position.coords.longitude;
         this.currentPosLat = position.coords.latitude;
-        this.latlngPos = this.currentPosLat + ',' + this.currentPosLong;
+        this.latlngPos = this.currentPosLat + ','+ this.currentPosLong;
         console.log(this.currentPosLat);
         console.log(this.currentPosLong); 
         await this.getReverseGeocode();
+        //this.$refs.map.mapObject.setView(this.latlngPos, 13);
       },
       function(error){
         alert(error.message);
@@ -87,20 +96,24 @@ export default class Home extends Vue {
       //markers: []
     }
   }
+  mounted () {
+    this.$refs.map.mapObject.setView(navigator.geolocation.getCurrentPosition((position)=>{this.pos = position}), 13);
+  }
 
   //Vue.config.productionTip = false;
 
 
 async getgeocode(address: string) {
-  await axios.get('https://maps.googleapis.com/maps/api/geocode/json?', {
+  await axios.get('https://api.openrouteservice.org/geocode/search?', {
       params: {
-        address: {address},
-        key: 'AIzaSyC_8ddUtSwBjXjfm6dNTi4O8owp0y14Hy8',
+        text: address,
+        api_key: '5b3ce3597851110001cf6248284f5c01dda445a9a0406fe843f2ccb5',
       }
     })
     .then((response) => {
-      this.lat = response.data.results[0].geometry.location.lat;
-      this.lng = response.data.results[0].geometry.location.lng;
+      console.log(response);
+      this.lat = response.data.features[0].geometry.coordinates[1];
+      this.lng = response.data.features[0].geometry.coordinates[0];
       console.log(this.lat);
       console.log(this.lng);
     })
