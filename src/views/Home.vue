@@ -18,7 +18,7 @@ import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
 // @ts-ignore
 import OrsDirections from 'openrouteservice-js/src/OrsDirections';
 import axios from 'axios';
-import { L, LMap, LTileLayer, LMarker, LPopup, LTooltip, LImageOverlay, LPolyline} from 'vue2-leaflet';
+import { LMap, LTileLayer, LMarker, LPopup, LTooltip, LImageOverlay, LPolyline} from 'vue2-leaflet';
 import 'leaflet/dist/leaflet.css'
 //import * as polyutil from 'polyline-encoded';
 
@@ -32,7 +32,6 @@ import 'leaflet/dist/leaflet.css'
     LPolyline,
     LPopup,
     LTooltip,
-    L, 
     },
 })
 
@@ -51,20 +50,20 @@ export default class Home extends Vue {
   lng: number|undefined;
   planroute() {
     this.getDircetions(this.startpoint, this.endpoint);
-        var map = this.$refs.map.mapObject;
+    /* var map = this.$refs.map.mapObject;
     var polyline = L.polyline(this.polylinearray,{
       color:'blue',
       weight: 6,
       opacity: 0.9
     }).addTo(map);
-    map.fitBounds(polyline.getBounds());
+    map.fitBounds(polyline.getBounds()); */
   }
   
   insertPolyline(){
-    var map = this.$refs.map.mapObject;
+    /*var map = this.$refs.map.mapObject;
     L.polyline(this.polylinearray,{
       color:'blue'
-    }).addTo(map);
+    }).addTo(map);*/
   }
 
   async getReverseGeocode(){
@@ -118,7 +117,7 @@ export default class Home extends Vue {
     }
   }
   mounted () {
-    this.$refs.map.mapObject.setView(navigator.geolocation.getCurrentPosition((position)=>{this.pos = position}), 13);
+    //this.$refs.map.mapObject.setView(navigator.geolocation.getCurrentPosition((position)=>{this.pos = position}), 13);
   }
 
   //Vue.config.productionTip = false;
