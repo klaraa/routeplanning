@@ -49,7 +49,7 @@ export default class Home extends Vue {
   lat: number|undefined;
   lng: number|undefined;
   planroute() {
-    this.getDircetions(this.startpoint, this.endpoint);
+    this.getDircetions(this.latlngPos, this.endpoint);
     /* var map = this.$refs.map.mapObject;
     var polyline = L.polyline(this.polylinearray,{
       color:'blue',
@@ -148,7 +148,7 @@ async getDircetions(startaddress: string, endaddress: string){
   await axios.get('https://api.openrouteservice.org/v2/directions/cycling-regular?',{
     params:{
       api_key:  '5b3ce3597851110001cf6248284f5c01dda445a9a0406fe843f2ccb5',
-      start: await this.getgeocode(startaddress),
+      start: this.currentPosLong + ',' + this.currentPosLat,
       end: await this.getgeocode(endaddress),
     }
   })
