@@ -4,9 +4,9 @@
     <input v-model="endpoint" placeholder="Ziel"/>
     <button v-on:click="planroute">Route planen</button>
     <button v-on:click="getPosition">aktuelle Position</button>
-    <l-map :zoom=13 :center="center" ref="map" @leaflet:load="insertPolyline">
+    <l-map :zoom=13 :center="center" ref="map">
       <l-tile-layer :url="url"></l-tile-layer>
-      <l-polyline :lat-lngs="polyline.latlngs" :color="polyline.color"></l-polyline>
+      <!-- <l-polyline :lat-lngs="polyline.latlngs" :color="polyline.color"></l-polyline> -->
       <!-- <l-marker :lat-lng="marker"></l-marker> -->
     </l-map>
   </div>
@@ -48,7 +48,7 @@ export default class Home extends Vue {
   planroute() {
     this.getDircetions(this.endpoint);
   }
-  
+
   async getReverseGeocode() {
     await axios.get('https://api.openrouteservice.org/geocode/reverse?', {
         params: {
@@ -67,17 +67,24 @@ export default class Home extends Vue {
   }
 
 
-  async getPosition() {
-    this.getCurrentPosition();
-    this.startpoint = await this.getReverseGeocode();
+ getPosition(){
+    navigator.geolocation.getCurrentPosition(
+      async (position)=>{
+        this.currentPosLong = position.coords.longitude;
+        this.currentPosLat = position.coords.latitude;
+        this.startpoint = await this.getReverseGeocode();
+        //this.$refs.map.mapObject.setView(this.latlngPos, 13);
+      },
+      function(error){
+        alert(error.message);
+      }
+    );
   }
 
-
-  getCurrentPosition() {
+  getCurrentPositionLat() {
     navigator.geolocation.getCurrentPosition(
-      async (position) => {
-          this.currentPosLong = position.coords.longitude;
-          this.currentPosLat = position.coords.latitude;
+      (position) => {
+          return position.coords.latitude;
         },
         function (error) {
           alert(error.message);
