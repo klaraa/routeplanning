@@ -10,6 +10,7 @@
   "dependencies": {
     "@pderas/vue2-geocoder": "^1.0.2",
     "@types/google-maps": "^3.2.0",
+    "@types/leaflet": "^1.4.3",
     "axios": "^0.18.0",
     "google-maps": "^3.3.0",
     "leaflet": "^1.4.0",
@@ -20,7 +21,7 @@
     "vue-class-component": "^6.0.0",
     "vue-property-decorator": "^7.0.0",
     "vue-router": "^3.0.1",
-    "vue2-leaflet": "^2.0.0",
+    "vue2-leaflet": "^2.0.3",
     "vuex": "^3.0.1"
   },
   "devDependencies": {
