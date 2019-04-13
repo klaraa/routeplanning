@@ -82,6 +82,7 @@ export default class Home extends Vue {
     .catch(function (error:any) {
       console.log(error);
     });
+    return this.startpos;
   }
 
 
@@ -93,7 +94,7 @@ export default class Home extends Vue {
         this.latlngPos = this.currentPosLat + ','+ this.currentPosLong;
         console.log(this.currentPosLat);
         console.log(this.currentPosLong); 
-        await this.getReverseGeocode();
+        this.startpoint = await this.getReverseGeocode();
         //this.$refs.map.mapObject.setView(this.latlngPos, 13);
       },
       function(error){
