@@ -4,6 +4,7 @@
     <input v-model="endpoint" placeholder="Ziel"/>
     <button v-on:click="planroute">Route planen</button>
     <button v-on:click="getPosition">aktuelle Position</button>
+    <!-- <button v-on:click="watchCurrentPosition">Routing starten</button> -->
     <l-map :zoom=13 :center="center" ref="map">
       <l-tile-layer :url="url"></l-tile-layer>
       <!-- <l-polyline :lat-lngs="polyline.latlngs" :color="polyline.color"></l-polyline> -->
@@ -40,8 +41,8 @@ export default class Home extends Vue {
   startpos = '';
   currentPosLong: number | undefined;
   currentPosLat: number | undefined;
-  polylinearray: [] | undefined;
-  steps: [] | undefined;
+  polylinearray: Array<Array<number>>=[];
+  steps: Array<any>=[];
   lat: number | undefined;
   lng: number | undefined;
 
@@ -58,38 +59,18 @@ export default class Home extends Vue {
         }
       })
       .then((response) => {
-        this.startpos = response.data.features[0].properties.name + ',' + response.data.features[0].properties.postalcode;
+        this.startpoint = response.data.features[0].properties.name + ',' + response.data.features[0].properties.postalcode;
       })
       .catch(function (error: any) {
         console.log(error);
       });
-    return this.startpos;
   }
 
 
- getPosition(){
-    navigator.geolocation.getCurrentPosition(
-      async (position)=>{
-        this.currentPosLong = position.coords.longitude;
-        this.currentPosLat = position.coords.latitude;
-        this.startpoint = await this.getReverseGeocode();
-        //this.$refs.map.mapObject.setView(this.latlngPos, 13);
-      },
-      function(error){
-        alert(error.message);
-      }
-    );
-  }
-
-  getCurrentPositionLat() {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-          return position.coords.latitude;
-        },
-        function (error) {
-          alert(error.message);
-        }
-    );
+ async getPosition(){
+    this.getLocationUpdate();
+    console.log(this.currentPosLong + " testeste");
+    await this.getReverseGeocode();
   }
 
   data() {
@@ -133,6 +114,31 @@ export default class Home extends Vue {
         this.polylinearray = response.data.features[0].geometry.coordinates;
         this.steps = response.data.features[0].properties.segments[0].steps;
       })
+  }
+
+  getLocationUpdate(){  
+    let options = {enableHighAccuracy: true, timeout: 50000, maximumAge: 0, desiredAccuracy: 0, frequency: 1} 
+    navigator.geolocation.watchPosition( (position)=>{
+        this.currentPosLong = position.coords.longitude;
+        this.currentPosLat = position.coords.latitude;
+        console.log(this.currentPosLong + " it works");
+        console.log(this.currentPosLat);
+        //this.startrouting(parseFloat(position.coords.latitude.toFixed(6)), parseFloat(position.coords.longitude.toFixed(6)));
+        //console.log(position.coords.latitude);
+      }, 
+      (error)=>{
+        console.log(error)},options)
+  }
+
+  startrouting(posLat: number, posLng: number){
+      if(this.polylinearray.includes([posLng,posLat])){
+          let index = this.polylinearray.indexOf([posLng,posLat]);
+          this.steps!.forEach(element => {
+            if(index < element.way_points[1] && index >= element.way_points[0]){
+              console.log(element.instruction);
+            }
+          });
+      }
   }
 }
 </script>
