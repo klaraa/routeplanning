@@ -14,12 +14,23 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import {
+  Component,
+  Vue
+} from 'vue-property-decorator';
 import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
 // @ts-ignore
 import OrsDirections from 'openrouteservice-js/src/OrsDirections';
 import axios from 'axios';
-import { LMap, LTileLayer, LMarker, LPopup, LTooltip, LImageOverlay, LPolyline} from 'vue2-leaflet';
+import {
+  LMap,
+  LTileLayer,
+  LMarker,
+  LPopup,
+  LTooltip,
+  LImageOverlay,
+  LPolyline
+} from 'vue2-leaflet';
 import 'leaflet/dist/leaflet.css'
 
 
@@ -27,12 +38,12 @@ import 'leaflet/dist/leaflet.css'
   components: {
     LMap,
     LTileLayer,
-    LMarker, 
+    LMarker,
     LImageOverlay,
     LPolyline,
     LPopup,
     LTooltip,
-    },
+  },
 })
 
 export default class Home extends Vue {
@@ -41,8 +52,8 @@ export default class Home extends Vue {
   startpos = '';
   currentPosLong: number | undefined;
   currentPosLat: number | undefined;
-  polylinearray: Array<Array<number>>=[];
-  steps: Array<any>=[];
+  polylinearray: Array < Array < number >>= [];
+  steps: Array < any >= [];
   lat: number | undefined;
   lng: number | undefined;
 
@@ -67,7 +78,7 @@ export default class Home extends Vue {
   }
 
 
- async getPosition(){
+  async getPosition() {
     this.getLocationUpdate();
     console.log(this.currentPosLong + " testeste");
     await this.getReverseGeocode();
@@ -114,31 +125,41 @@ export default class Home extends Vue {
         this.polylinearray = response.data.features[0].geometry.coordinates;
         this.steps = response.data.features[0].properties.segments[0].steps;
       })
+    this.startrouting(this.currentPosLat!, this.currentPosLong!);
   }
 
-  getLocationUpdate(){  
-    let options = {enableHighAccuracy: true, timeout: 50000, maximumAge: 0, desiredAccuracy: 0, frequency: 1} 
-    navigator.geolocation.watchPosition( (position)=>{
-        this.currentPosLong = position.coords.longitude;
-        this.currentPosLat = position.coords.latitude;
+  getLocationUpdate() {
+    let options = {
+      enableHighAccuracy: true,
+      maximumAge: 0,
+      desiredAccuracy: 0,
+      frequency: 1
+    }
+    navigator.geolocation.watchPosition((position) => {
+        this.currentPosLong = parseFloat(position.coords.longitude.toFixed(6));
+        this.currentPosLat = parseFloat(position.coords.latitude.toFixed(6));
         console.log(this.currentPosLong + " it works");
         console.log(this.currentPosLat);
         //this.startrouting(parseFloat(position.coords.latitude.toFixed(6)), parseFloat(position.coords.longitude.toFixed(6)));
         //console.log(position.coords.latitude);
-      }, 
-      (error)=>{
-        console.log(error)},options)
+      },
+      (error) => {
+        console.log(error)
+      }, options)
   }
 
-  startrouting(posLat: number, posLng: number){
-      if(this.polylinearray.includes([posLng,posLat])){
-          let index = this.polylinearray.indexOf([posLng,posLat]);
-          this.steps!.forEach(element => {
-            if(index < element.way_points[1] && index >= element.way_points[0]){
-              console.log(element.instruction);
-            }
-          });
+  startrouting(posLat: number, posLng: number) {
+    this.polylinearray.forEach(point => {
+      if (Math.abs(point[0] - posLng) < 0.0003 && Math.abs(point[1] - posLat) < 0.0003) {
+        let index = this.polylinearray.indexOf(point);
+        this.steps!.forEach(element => {
+          if (index < element.way_points[1] && index >= element.way_points[0]) {
+            console.log(element.instruction);
+          }
+        });
+
       }
+    });
   }
 }
 </script>
