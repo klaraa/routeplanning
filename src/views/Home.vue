@@ -57,6 +57,8 @@ export default class Home extends Vue {
   lat: number | undefined;
   lng: number | undefined;
 
+  
+
   planroute() {
     this.getDircetions(this.endpoint);
   }
@@ -77,7 +79,7 @@ export default class Home extends Vue {
       });
   }
 
-
+  
   async getPosition() {
     this.getLocationUpdate();
     console.log(this.currentPosLong + " testeste");
