@@ -29,9 +29,9 @@ import {
   LPopup,
   LTooltip,
   LImageOverlay,
-  LPolyline
+  LPolyline,
 } from 'vue2-leaflet';
-import 'leaflet/dist/leaflet.css'
+import 'leaflet/dist/leaflet.css';
 
 
 @Component({
@@ -52,12 +52,11 @@ export default class Home extends Vue {
   startpos = '';
   currentPosLong: number | undefined;
   currentPosLat: number | undefined;
-  polylinearray: Array < Array < number >>= [];
-  steps: Array < any >= [];
+  polylinearray: Array < Array < number >> = [];
+  steps: Array < any > = [];
   lat: number | undefined;
   lng: number | undefined;
 
-  
 
   planroute() {
     this.getDircetions(this.endpoint);
@@ -87,6 +86,9 @@ export default class Home extends Vue {
   }
 
   data() {
+    Notification.requestPermission(function(status) {
+      console.log('Notification permission status:', status);
+    });
     return {
       zoom: 13,
       center: [48, 9],
@@ -151,18 +153,25 @@ export default class Home extends Vue {
   }
 
   startrouting(posLat: number, posLng: number) {
-    this.polylinearray.forEach(point => {
-      if (Math.abs(point[0] - posLng) < 0.0003 && Math.abs(point[1] - posLat) < 0.0003) {
-        let index = this.polylinearray.indexOf(point);
-        this.steps!.forEach(element => {
-          if (index < element.way_points[1] && index >= element.way_points[0]) {
-            console.log(element.instruction);
-            new Notification(element.instruction);
-          }
-        });
+      this.polylinearray.forEach(point => {
+        if (Math.abs(point[0] - posLng) < 0.0003 && Math.abs(point[1] - posLat) < 0.0003) {
+          let index = this.polylinearray.indexOf(point);
+          this.steps!.forEach(element => {
+            if (index < element.way_points[1] && index >= element.way_points[0]) {
+              console.log(element.instruction);
+              navigator.serviceWorker.ready.then(function (registration) {
+                registration.showNotification(element.instruction, {
+                  body: 'Buzz! Buzz!',
+                  icon: '../images/touch/chrome-touch-icon-192x192.png',
+                  vibrate: [200, 100, 200, 100, 200, 100, 200],
+                  tag: 'vibration-sample'
+                });
+              });
+            }
+          });
 
-      }
-    });
+        }
+      });
   }
 }
 </script>

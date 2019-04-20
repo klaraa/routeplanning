@@ -12,6 +12,3 @@ new Vue({
   render: (h) => h(App),
 }).$mount('#app');
 
-Notification.requestPermission(function(status) {
-  console.log('Notification permission status:', status);
-});
