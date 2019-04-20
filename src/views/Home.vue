@@ -157,6 +157,7 @@ export default class Home extends Vue {
         this.steps!.forEach(element => {
           if (index < element.way_points[1] && index >= element.way_points[0]) {
             console.log(element.instruction);
+            new Notification(element.instruction);
           }
         });
 
