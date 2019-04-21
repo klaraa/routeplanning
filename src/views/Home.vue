@@ -162,8 +162,6 @@ export default class Home extends Vue {
               navigator.serviceWorker.register('/service-worker.js');
               navigator.serviceWorker.ready.then(function (registration) {
                 registration.showNotification(element.instruction, {
-                  body: 'test',
-                  icon: '../images/icons/baseline-navigation-24px.svg',
                   vibrate: [200, 100, 200, 100, 200, 100, 200],
                   tag: 'vibration-sample'
                 });
