@@ -159,10 +159,11 @@ export default class Home extends Vue {
           this.steps!.forEach(element => {
             if (index < element.way_points[1] && index >= element.way_points[0]) {
               console.log(element.instruction);
+              navigator.serviceWorker.register('/service-worker.js');
               navigator.serviceWorker.ready.then(function (registration) {
                 registration.showNotification(element.instruction, {
-                  body: 'Buzz! Buzz!',
-                  icon: '../images/touch/chrome-touch-icon-192x192.png',
+                  body: 'test',
+                  icon: '../images/icons/baseline-navigation-24px.svg',
                   vibrate: [200, 100, 200, 100, 200, 100, 200],
                   tag: 'vibration-sample'
                 });
