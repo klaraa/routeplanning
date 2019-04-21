@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/routeplanning/precache-manifest.57a31541d59f85901a52228663a743e2.js"
+  "/routeplanning/precache-manifest.27988f7d54c848d753313015028551c2.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "routeplanning"});
