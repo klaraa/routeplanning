@@ -129,7 +129,23 @@ export default class Home extends Vue {
         this.polylinearray = response.data.features[0].geometry.coordinates;
         this.steps = response.data.features[0].properties.segments[0].steps;
       })
-    this.startrouting(this.currentPosLat!, this.currentPosLong!);
+    let options = {
+      enableHighAccuracy: true,
+      maximumAge: 0,
+      desiredAccuracy: 0,
+      frequency: 1
+    }
+    navigator.geolocation.watchPosition((position) => {
+        this.currentPosLong = parseFloat(position.coords.longitude.toFixed(6));
+        this.currentPosLat = parseFloat(position.coords.latitude.toFixed(6));
+        console.log(this.currentPosLong + " it works");
+        console.log(this.currentPosLat);
+        this.startrouting(parseFloat(position.coords.latitude.toFixed(6)), parseFloat(position.coords.longitude.toFixed(6)));
+      },
+      (error) => {
+        console.log(error)
+      }, options)
+    //this.startrouting(this.currentPosLat!, this.currentPosLong!);
   }
 
   getLocationUpdate() {
@@ -139,7 +155,7 @@ export default class Home extends Vue {
       desiredAccuracy: 0,
       frequency: 1
     }
-    navigator.geolocation.watchPosition((position) => {
+    navigator.geolocation.getCurrentPosition((position) => {
         this.currentPosLong = parseFloat(position.coords.longitude.toFixed(6));
         this.currentPosLat = parseFloat(position.coords.latitude.toFixed(6));
         console.log(this.currentPosLong + " it works");
