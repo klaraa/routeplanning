@@ -158,6 +158,7 @@ export default class Home extends Vue {
     navigator.geolocation.getCurrentPosition((position) => {
         this.currentPosLong = parseFloat(position.coords.longitude.toFixed(6));
         this.currentPosLat = parseFloat(position.coords.latitude.toFixed(6));
+        console.log(position);
         console.log(this.currentPosLong + " it works");
         console.log(this.currentPosLat);
         //this.startrouting(parseFloat(position.coords.latitude.toFixed(6)), parseFloat(position.coords.longitude.toFixed(6)));
