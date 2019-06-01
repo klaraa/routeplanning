@@ -4,12 +4,6 @@
     <input v-model="endpoint" placeholder="Ziel"/>
     <button v-on:click="planroute">Route planen</button>
     <button v-on:click="getPosition">aktuelle Position</button>
-    <!-- <button v-on:click="watchCurrentPosition">Routing starten</button> -->
-    <l-map :zoom=13 :center="center" ref="map">
-      <l-tile-layer :url="url"></l-tile-layer>
-      <!-- <l-polyline :lat-lngs="polyline.latlngs" :color="polyline.color"></l-polyline> -->
-      <!-- <l-marker :lat-lng="marker"></l-marker> -->
-    </l-map>
   </div>
 </template>
 
