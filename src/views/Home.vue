@@ -89,6 +89,11 @@ export default class Home extends Vue {
     Notification.requestPermission(function(status) {
       console.log('Notification permission status:', status);
     });
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+      navigator.serviceWorker.register('/service-worker.js');
+    });
+}
     return {
       zoom: 13,
       center: [48, 9],
